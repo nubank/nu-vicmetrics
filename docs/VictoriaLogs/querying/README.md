@@ -59,7 +59,7 @@ By default the `/select/logsql/query` returns all the log entries matching the g
   curl http://localhost:9428/select/logsql/query -d 'query=error | limit 10'
   ```
 - By adding [`_time` filter](https://docs.victoriametrics.com/victorialogs/logsql/#time-filter). The time range for the query can be specified via optional
-  `start` and `end` query ars formatted according to [these docs](https://docs.victoriametrics.com/single-server-victoriametrics/#timestamp-formats).
+  `start` and `end` query args formatted according to [these docs](https://docs.victoriametrics.com/single-server-victoriametrics/#timestamp-formats).
 - By adding more specific [filters](https://docs.victoriametrics.com/victorialogs/logsql/#filters) to the query, which select lower number of logs.
 
 The `/select/logsql/query` endpoint returns [a stream of JSON lines](https://jsonlines.org/),
@@ -298,7 +298,7 @@ For example, the following command returns the number of logs per each `level` [
 across logs over `2024-01-01` day by UTC:
 
 ```sh
-curl http://localhost:9428/select/logsql/stats_query -d 'query=_time:1d | stats by (level) count(*)' -d 'time=2024-01-02'
+curl http://localhost:9428/select/logsql/stats_query -d 'query=_time:1d | stats by (level) count(*)' -d 'time=2024-01-02Z'
 ```
 
 Below is an example JSON output returned from this endpoint:
@@ -373,7 +373,7 @@ For example, the following command returns the number of logs per each `level` [
 across logs over `2024-01-01` day by UTC with 6-hour granularity:
 
 ```sh
-curl http://localhost:9428/select/logsql/stats_query_range -d 'query=* | stats by (level) count(*)' -d 'start=2024-01-01' -d 'end=2024-01-02' -d 'step=6h'
+curl http://localhost:9428/select/logsql/stats_query_range -d 'query=* | stats by (level) count(*)' -d 'start=2024-01-01Z' -d 'end=2024-01-02Z' -d 'step=6h'
 ```
 
 Below is an example JSON output returned from this endpoint:
@@ -650,7 +650,7 @@ Below is an example JSON output returned from this endpoint:
 }
 ```
 
-The `/select/logsql/stream_field_names` endpoint supports optional `limit=N` query arg, which allows limiting the number of returned values to `N`.
+The `/select/logsql/stream_field_values` endpoint supports optional `limit=N` query arg, which allows limiting the number of returned values to `N`.
 The endpoint returns arbitrary subset of values if their number exceeds `N`, so `limit=N` cannot be used for pagination over big number of field values.
 When the `limit` is reached, `hits` are zeroed, since they cannot be calculated reliably.
 
@@ -761,7 +761,7 @@ Below is an example JSON output returned from this endpoint:
 }
 ```
 
-The `/select/logsql/field_names` endpoint supports optional `limit=N` query arg, which allows limiting the number of returned values to `N`.
+The `/select/logsql/field_values` endpoint supports optional `limit=N` query arg, which allows limiting the number of returned values to `N`.
 The endpoint returns arbitrary subset of values if their number exceeds `N`, so `limit=N` cannot be used for pagination over big number of field values.
 When the `limit` is reached, `hits` are zeroed, since they cannot be calculated reliably.
 
@@ -876,7 +876,7 @@ received from [streams](https://docs.victoriametrics.com/victorialogs/keyconcept
 during the last 5 minutes:
 
 ```sh
-curl http://localhost:9428/select/logsql/query -d 'query=_stream:{app="nginx"} AND _time:5m AND error' | wc -l
+curl http://localhost:9428/select/logsql/query -d 'query={app="nginx"} AND _time:5m AND error' | wc -l
 ```
 
 See [these docs](https://docs.victoriametrics.com/victorialogs/logsql/#stream-filter) about `_stream` filter,
@@ -886,7 +886,7 @@ and [these docs](https://docs.victoriametrics.com/victorialogs/logsql/#logical-f
 Alternatively, you can count the number of matching logs at VictoriaLogs side with [`stats` pipe](https://docs.victoriametrics.com/victorialogs/logsql/#stats-pipe):
 
 ```sh
-curl http://localhost:9428/select/logsql/query -d 'query=_stream:{app="nginx"} AND _time:5m AND error | stats count() logs_with_error'
+curl http://localhost:9428/select/logsql/query -d 'query={app="nginx"} AND _time:5m AND error | stats count() logs_with_error'
 ```
 
 The following example shows how to sort query results by the [`_time` field](https://docs.victoriametrics.com/victorialogs/keyconcepts/#time-field) with traditional Unix tools:
