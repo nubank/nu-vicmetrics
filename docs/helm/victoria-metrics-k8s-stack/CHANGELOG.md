@@ -1,6 +1,24 @@
 ## Next release
 
-- TODO
+- Generate VM components tag version from chart app name by default
+
+## 0.27.0
+
+**Release date:** 2024-10-02
+
+![AppVersion: v1.104.0](https://img.shields.io/static/v1?label=AppVersion&message=v1.104.0&color=success&logo=)
+![Helm: v3](https://img.shields.io/static/v1?label=Helm&message=v3&color=informational&logo=helm)
+
+- bump version of VM components to [v1.104.0](https://github.com/VictoriaMetrics/VictoriaMetrics/releases/tag/v1.104.0)
+
+## 0.26.0
+
+**Release date:** 2024-09-29
+
+![AppVersion: v1.102.1](https://img.shields.io/static/v1?label=AppVersion&message=v1.102.1&color=success&logo=)
+![Helm: v3](https://img.shields.io/static/v1?label=Helm&message=v3&color=informational&logo=helm)
+
+- updates operator to [v0.48.3](https://github.com/VictoriaMetrics/operator/releases/tag/v0.48.3)
 
 ## 0.25.17
 

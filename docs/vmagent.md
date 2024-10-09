@@ -99,7 +99,7 @@ Pass `-help` to `vmagent` in order to see [the full list of supported command-li
 ## How to push data to vmagent
 
 `vmagent` supports [the same set of push-based data ingestion protocols as VictoriaMetrics does](https://docs.victoriametrics.com/#how-to-import-time-series-data)
-additionally to pull-based Prometheus-compatible targets' scraping:
+in addition to the pull-based Prometheus-compatible targets' scraping:
 
 * DataDog "submit metrics" API. See [these docs](https://docs.victoriametrics.com/single-server-victoriametrics/#how-to-send-data-from-datadog-agent).
 * InfluxDB line protocol via `http://<vmagent>:8429/write`. See [these docs](https://docs.victoriametrics.com/single-server-victoriametrics/#how-to-send-data-from-influxdb-compatible-agents-such-as-telegraf).
@@ -267,15 +267,16 @@ There is also support for multitenant writes. See [these docs](#multitenancy).
 for the collected samples. Examples:
 
 - The following command instructs `vmagent` to send only the last sample per each seen [time series](https://docs.victoriametrics.com/keyconcepts/#time-series) per every 60 seconds:
-  ```
-  ./vmagent -remoteWrite.url=http://remote-storage/api/v1/write -remoteWrite.streamAggr.dedupInterval=60s
+  ```sh
+  ./vmagent -remoteWrite.url=http://remote-storage/api/v1/write -streamAggr.dedupInterval=60s
   ```
 
 - The following command instructs `vmagent` to merge [time series](https://docs.victoriametrics.com/keyconcepts/#time-series) with different `replica` label values
-  and then to send only the last sample per each merged series per ever 60 seconds:
+  and then to send only the last sample per each merged series per every 60 seconds:
+  ```sh
+  ./vmagent -remoteWrite=http://remote-storage/api/v1/write -streamAggr.dropInputLabels=replica -streamAggr.dedupInterval=60s
   ```
-  ./vmagent -remoteWrite=http://remote-storage/api/v1/write -streamAggr.dropInputLabels=replica -remoteWrite.streamAggr.dedupInterval=60s
-  ```
+
 
 ## SRV urls
 
@@ -1982,6 +1983,8 @@ See the docs at https://docs.victoriametrics.com/vmagent/ .
      How frequently to reload the full state from Kubernetes API server (default 30m0s)
   -promscrape.kubernetes.attachNodeMetadataAll
      Whether to set attach_metadata.node=true for all the kubernetes_sd_configs at -promscrape.config . It is possible to set attach_metadata.node=false individually per each kubernetes_sd_configs . See https://docs.victoriametrics.com/sd_configs/#kubernetes_sd_configs
+  -promscrape.kubernetes.useHTTP2Client
+     Whether to use HTTP/2 client for connection to Kubernetes API server. This may reduce amount of concurrent connections to API server when watching for a big number of Kubernetes objects.
   -promscrape.kubernetesSDCheckInterval duration
      Interval for checking for changes in Kubernetes API server. This works only if kubernetes_sd_configs is configured in '-promscrape.config' file. See https://docs.victoriametrics.com/sd_configs/#kubernetes_sd_configs for details (default 30s)
   -promscrape.kumaSDCheckInterval duration
@@ -2005,8 +2008,8 @@ See the docs at https://docs.victoriametrics.com/vmagent/ .
      Interval for checking for changes in Nomad. This works only if nomad_sd_configs is configured in '-promscrape.config' file. See https://docs.victoriametrics.com/sd_configs/#nomad_sd_configs for details (default 30s)
   -promscrape.openstackSDCheckInterval duration
      Interval for checking for changes in openstack API server. This works only if openstack_sd_configs is configured in '-promscrape.config' file. See https://docs.victoriametrics.com/sd_configs/#openstack_sd_configs for details (default 30s)
-  -promscrape.scrapeExemplars
-     Whether to enable scraping of exemplars from scrape targets.
+  -promscrape.ovhcloudSDCheckInterval duration
+     Interval for checking for changes in OVH Cloud VPS and dedicated server. This works only if ovhcloud_sd_configs is configured in '-promscrape.config' file. See https://docs.victoriametrics.com/sd_configs/#ovhcloud_sd_configs for details (default 30s)
   -promscrape.seriesLimitPerTarget int
      Optional limit on the number of unique time series a single scrape target can expose. See https://docs.victoriametrics.com/vmagent/#cardinality-limiter for more info
   -promscrape.streamParse

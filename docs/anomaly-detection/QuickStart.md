@@ -32,13 +32,13 @@ Below are the steps to get `vmanomaly` up and running inside a Docker container:
 1. Pull Docker image:
 
 ```sh
-docker pull victoriametrics/vmanomaly:latest
+docker pull victoriametrics/vmanomaly:v1.16.1
 ```
 
 2. (Optional step) tag the `vmanomaly` Docker image:
 
 ```sh
-docker image tag victoriametrics/vmanomaly:latest vmanomaly
+docker image tag victoriametrics/vmanomaly:v1.16.1 vmanomaly
 ```
 
 3. Start the `vmanomaly` Docker container with a *license file*, use the command below.
@@ -50,7 +50,7 @@ export YOUR_CONFIG_FILE_PATH=path/to/config/file
 docker run -it -v $YOUR_LICENSE_FILE_PATH:/license \
                -v $YOUR_CONFIG_FILE_PATH:/config.yml \
                vmanomaly /config.yml \
-               --license-file=/license
+               --licenseFile=/license
 ```
 
 In case you found `PermissionError: [Errno 13] Permission denied:` in `vmanomaly` logs, set user/user group to 1000 in the run command above / in a docker-compose file:
@@ -62,7 +62,7 @@ docker run -it --user 1000:1000 \
                -v $YOUR_LICENSE_FILE_PATH:/license \
                -v $YOUR_CONFIG_FILE_PATH:/config.yml \
                vmanomaly /config.yml \
-               --license-file=/license
+               --licenseFile=/license
 ```
 
 ```yaml
@@ -70,13 +70,13 @@ docker run -it --user 1000:1000 \
 services:
   # ...
   vmanomaly:
-    image: victoriametrics/vmanomaly:latest
+    image: victoriametrics/vmanomaly:v1.16.1
     volumes:
         $YOUR_LICENSE_FILE_PATH:/license
         $YOUR_CONFIG_FILE_PATH:/config.yml
     command:
       - "/config.yml"
-      - "--license-file=/license"
+      - "--licenseFile=/license"
     # ...
 ```
 

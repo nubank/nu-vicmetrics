@@ -1356,7 +1356,7 @@ Additionally, VictoriaMetrics can accept metrics via the following popular data 
 * `/api/v1/import/prometheus` for importing data in Prometheus exposition format and in [Pushgateway format](https://github.com/prometheus/pushgateway#url).
   See [these docs](#how-to-import-data-in-prometheus-exposition-format) for details.
 
-Please note, most of the ingestion APIs (except [Prometheus remote_write API](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#remote_write))
+Please note, most of the ingestion APIs (except [Prometheus remote_write API](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#remote_write) and [OpenTelemetry](#sending-data-via-opentelemetry))
 are optimized for performance and processes data in a streaming fashion.
 It means that client can transfer unlimited amount of data through the open connection. Because of this, import APIs
 may not return parsing errors to the client, as it is expected for data stream to be not interrupted. 
@@ -3028,6 +3028,8 @@ Pass `-help` to VictoriaMetrics in order to see the list of supported command-li
      How frequently to reload the full state from Kubernetes API server (default 30m0s)
   -promscrape.kubernetes.attachNodeMetadataAll
      Whether to set attach_metadata.node=true for all the kubernetes_sd_configs at -promscrape.config . It is possible to set attach_metadata.node=false individually per each kubernetes_sd_configs . See https://docs.victoriametrics.com/sd_configs/#kubernetes_sd_configs
+  -promscrape.kubernetes.useHTTP2Client
+     Whether to use HTTP/2 client for connection to Kubernetes API server. This may reduce amount of concurrent connections to API server when watching for a big number of Kubernetes objects.
   -promscrape.kubernetesSDCheckInterval duration
      Interval for checking for changes in Kubernetes API server. This works only if kubernetes_sd_configs is configured in '-promscrape.config' file. See https://docs.victoriametrics.com/sd_configs/#kubernetes_sd_configs for details (default 30s)
   -promscrape.kumaSDCheckInterval duration
@@ -3051,6 +3053,8 @@ Pass `-help` to VictoriaMetrics in order to see the list of supported command-li
      Interval for checking for changes in Nomad. This works only if nomad_sd_configs is configured in '-promscrape.config' file. See https://docs.victoriametrics.com/sd_configs/#nomad_sd_configs for details (default 30s)
   -promscrape.openstackSDCheckInterval duration
      Interval for checking for changes in openstack API server. This works only if openstack_sd_configs is configured in '-promscrape.config' file. See https://docs.victoriametrics.com/sd_configs/#openstack_sd_configs for details (default 30s)
+  -promscrape.ovhcloudSDCheckInterval duration
+     Interval for checking for changes in OVH Cloud VPS and dedicated server. This works only if ovhcloud_sd_configs is configured in '-promscrape.config' file. See https://docs.victoriametrics.com/sd_configs/#ovhcloud_sd_configs for details (default 30s)
   -promscrape.seriesLimitPerTarget int
      Optional limit on the number of unique time series a single scrape target can expose. See https://docs.victoriametrics.com/vmagent/#cardinality-limiter for more info
   -promscrape.streamParse

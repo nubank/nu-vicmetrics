@@ -15,6 +15,38 @@ according to [these docs](https://docs.victoriametrics.com/victorialogs/quicksta
 
 ## tip
 
+## [v0.34.0](https://github.com/VictoriaMetrics/VictoriaMetrics/releases/tag/v0.34.0-victorialogs)
+
+Released at 2024-10-08
+
+* FEATURE: [vlogscli](https://docs.victoriametrics.com/victorialogs/querying/vlogscli/): add ability to display results in `logfmt` mode, single-line and multi-line JSON modes according [these docs](https://docs.victoriametrics.com/victorialogs/querying/vlogscli/#output-modes).
+* FEATURE: [vlogscli](https://docs.victoriametrics.com/victorialogs/querying/vlogscli/): preserve `less` output after the exit from scrolling mode. This should help re-using previous query results in subsequent queries.
+* FEATURE: add [`len` pipe](https://docs.victoriametrics.com/victorialogs/logsql/#len-pipe) for calculating the length for the given [log field](https://docs.victoriametrics.com/victorialogs/keyconcepts/#data-model) value in bytes.
+
+## [v0.33.0](https://github.com/VictoriaMetrics/VictoriaMetrics/releases/tag/v0.33.0-victorialogs)
+
+Released at 2024-10-01
+
+* FEATURE: add interactive command-line tool for querying VictoriaLogs - [`vlogscli`](https://docs.victoriametrics.com/victorialogs/querying/vlogscli/).
+
+* BUGFIX: [`count_uniq` stats function](https://docs.victoriametrics.com/victorialogs/logsql/#count_uniq-stats): do not count field values, which aren't matched by the used filters. See [this issue](https://github.com/VictoriaMetrics/VictoriaMetrics/issues/7152).
+
+## [v0.32.1](https://github.com/VictoriaMetrics/VictoriaMetrics/releases/tag/v0.32.1-victorialogs)
+
+Released at 2024-09-30
+
+* BUGFIX: do not return field values with zero matching logs from [`field_values`](https://docs.victoriametrics.com/victorialogs/logsql/#field_values-pipe), [`top`](https://docs.victoriametrics.com/victorialogs/logsql/#top-pipe) and [`uniq`](https://docs.victoriametrics.com/victorialogs/logsql/#uniq-pipe) pipes. See [this issue](https://github.com/VictoriaMetrics/victorialogs-datasource/issues/72#issuecomment-2352078483).
+
+## [v0.32.0](https://github.com/VictoriaMetrics/VictoriaMetrics/releases/tag/v0.32.0-victorialogs)
+
+Released at 2024-09-29
+
+* FEATURE: [data ingestion](https://docs.victoriametrics.com/victorialogs/data-ingestion/): accept Unix timestamps in seconds in the ingested logs. This simplifies integration with systems, which prefer Unix timestamps over text-based representation of time.
+* FEATURE: [`sort` pipe](https://docs.victoriametrics.com/victorialogs/logsql/#sort-pipe): allow using `order` alias instead of `sort`. For example, `_time:5s | order by (_time)` query works the same as `_time:5s | sort by (_time)`. This simplifies the to [LogsQL](https://docs.victoriametrics.com/victorialogs/logsql/) transition from SQL-like query languages.
+* FEATURE: [`stats` pipe](https://docs.victoriametrics.com/victorialogs/logsql/#stats-pipe): allow using multiple identical [stats functions](https://docs.victoriametrics.com/victorialogs/logsql/#stats-pipe-functions) with distinct [filters](https://docs.victoriametrics.com/victorialogs/logsql/#stats-with-additional-filters) and automatically generated result names. For example, `_time:5m | count(), count() if (error)` query works as expected now, e.g. it returns two results over the last 5 minutes: the total number of logs and the number of logs with `error` [word](https://docs.victoriametrics.com/victorialogs/logsql/#word). Previously this query couldn't be executed because the `if (...)` condition wasn't included in the automatically generate result name, so both results had the same name - `count(*)`.
+
+* BUGFIX: properly calculate [`uniq`](https://docs.victoriametrics.com/victorialogs/logsql/#uniq-pipe) and [`top`](https://docs.victoriametrics.com/victorialogs/logsql/#top-pipe) pipes. Previously they could return invalid results in some cases.
+
 ## [v0.31.0](https://github.com/VictoriaMetrics/VictoriaMetrics/releases/tag/v0.31.0-victorialogs)
 
 Released at 2024-09-27

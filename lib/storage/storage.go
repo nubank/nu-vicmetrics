@@ -42,7 +42,6 @@ const (
 type Storage struct {
 	rowsReceivedTotal atomic.Uint64
 	rowsAddedTotal    atomic.Uint64
-	naNValueRows      atomic.Uint64
 
 	tooSmallTimestampRows atomic.Uint64
 	tooBigTimestampRows   atomic.Uint64
@@ -505,7 +504,6 @@ type Metrics struct {
 	DedupsDuringMerge uint64
 	SnapshotsCount    uint64
 
-	NaNValueRows          uint64
 	TooSmallTimestampRows uint64
 	TooBigTimestampRows   uint64
 	InvalidRawMetricNames uint64
@@ -581,7 +579,6 @@ func (s *Storage) UpdateMetrics(m *Metrics) {
 	m.DedupsDuringMerge = dedupsDuringMerge.Load()
 	m.SnapshotsCount += uint64(s.mustGetSnapshotsCount())
 
-	m.NaNValueRows += s.naNValueRows.Load()
 	m.TooSmallTimestampRows += s.tooSmallTimestampRows.Load()
 	m.TooBigTimestampRows += s.tooBigTimestampRows.Load()
 	m.InvalidRawMetricNames += s.invalidRawMetricNames.Load()
@@ -1335,11 +1332,13 @@ func (s *Storage) prefetchMetricNames(qt *querytracer.Tracer, accountID, project
 // ErrDeadlineExceeded is returned when the request times out.
 var ErrDeadlineExceeded = fmt.Errorf("deadline exceeded")
 
-// DeleteSeries deletes all the series matching the given tfss.
+// DeleteSeries deletes the series matching the given tfss.
 //
-// Returns the number of metrics deleted.
-func (s *Storage) DeleteSeries(qt *querytracer.Tracer, tfss []*TagFilters) (int, error) {
-	deletedCount, err := s.idb().DeleteTSIDs(qt, tfss)
+// If the number of the series exceeds maxMetrics, no series will be deleted and
+// an error will be returned. Otherwise, the funciton returns the number of
+// metrics deleted.
+func (s *Storage) DeleteSeries(qt *querytracer.Tracer, tfss []*TagFilters, maxMetrics int) (int, error) {
+	deletedCount, err := s.idb().DeleteTSIDs(qt, tfss, maxMetrics)
 	if err != nil {
 		return deletedCount, fmt.Errorf("cannot delete tsids: %w", err)
 	}
@@ -1944,7 +1943,6 @@ func (s *Storage) add(rows []rawRow, dstMrs []*MetricRow, mrs []MetricRow, preci
 			if !decimal.IsStaleNaN(mr.Value) {
 				// Skip NaNs other than Prometheus staleness marker, since the underlying encoding
 				// doesn't know how to work with them.
-				s.naNValueRows.Add(1)
 				continue
 			}
 		}
