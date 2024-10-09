@@ -12,6 +12,9 @@ import (
 	"time"
 	"unsafe"
 
+	"github.com/VictoriaMetrics/metrics"
+	"github.com/VictoriaMetrics/metricsql"
+
 	"github.com/VictoriaMetrics/VictoriaMetrics/app/vmselect/netstorage"
 	"github.com/VictoriaMetrics/VictoriaMetrics/app/vmselect/searchutils"
 	"github.com/VictoriaMetrics/VictoriaMetrics/lib/auth"
@@ -26,8 +29,6 @@ import (
 	"github.com/VictoriaMetrics/VictoriaMetrics/lib/querytracer"
 	"github.com/VictoriaMetrics/VictoriaMetrics/lib/storage"
 	"github.com/VictoriaMetrics/VictoriaMetrics/lib/stringsutil"
-	"github.com/VictoriaMetrics/metrics"
-	"github.com/VictoriaMetrics/metricsql"
 )
 
 var (
@@ -115,7 +116,7 @@ type EvalConfig struct {
 	Step      int64
 
 	// MaxSeries is the maximum number of time series, which can be scanned by the query.
-	// Zero means 'no limit'
+	// Zero means 'no limit' on vmselect side and let vmstorage to calculate.
 	MaxSeries int
 
 	// MaxPointsPerSeries is the limit on the number of points, which can be generated per each returned time series.
