@@ -1397,7 +1397,7 @@ The shortlist of configuration flags is the following:
   -remoteWrite.retryMaxTime duration
      The max time spent on retry attempts for the failed remote-write request. Change this value if it is expected for remoteWrite.url to be unreachable for more than -remoteWrite.retryMaxTime. See also -remoteWrite.retryMinInterval (default 30s)
   -remoteWrite.retryMinInterval duration
-     The minimum delay between retry attempts. Every next retry attempt will double the delay to prevent hammering of remote database. See also -remoteWrite.retryMaxInterval (default 1s)
+     The minimum delay between retry attempts. Every next retry attempt will double the delay to prevent hammering of remote database. See also -remoteWrite.retryMaxTime (default 1s)
   -remoteWrite.sendTimeout duration
      Timeout for sending data to the configured -remoteWrite.url. (default 30s)
   -remoteWrite.showURL
@@ -1427,14 +1427,14 @@ The shortlist of configuration flags is the following:
   -replay.timeTo string
      The time filter in RFC3339 format to finish the replay by. E.g. '2020-01-01T20:07:00Z'. By default, is set to the current time.
   -rule array
-     Path to the files or http url with alerting and/or recording rules.
+     Path to the files or http url with alerting and/or recording rules in YAML format.
      Supports hierarchical patterns and regexpes.
      Examples:
       -rule="/path/to/file". Path to a single file with alerting rules.
       -rule="http://<some-server-addr>/path/to/rules". HTTP URL to a page with alerting rules.
       -rule="dir/*.yaml" -rule="/*.yaml" -rule="gcs://vmalert-rules/tenant_%{TENANT_ID}/prod". 
       -rule="dir/**/*.yaml". Includes all the .yaml files in "dir" subfolders recursively.
-     Rule files may contain %{ENV_VAR} placeholders, which are substituted by the corresponding env vars.   
+     Rule files support YAML multi-document. Files may contain %{ENV_VAR} placeholders, which are substituted by the corresponding env vars.  
      Enterprise version of vmalert supports S3 and GCS paths to rules.
      For example: gs://bucket/path/to/rules, s3://bucket/path/to/rules
      S3 and GCS paths support only matching by prefix, e.g. s3://bucket/dir/rule_ matches
