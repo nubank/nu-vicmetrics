@@ -77,7 +77,7 @@ or [vmgateway](https://docs.victoriametrics.com/vmgateway/). [Contact us](mailto
 - Data for all the tenants is evenly spread among available `vmstorage` nodes. This guarantees even load among `vmstorage` nodes
 when different tenants have different amounts of data and different query load.
 
-- The database performance and resource usage doesn't depend on the number of tenants. It depends mostly on the total number of active time series in all the tenants. A time series is considered active if it received at least a single sample during the last hour or it has been touched by queries during the last hour.
+- The database performance and resource usage doesn't depend on the number of tenants. It depends mostly on the total number of [active time series](https://docs.victoriametrics.com/faq/#what-is-an-active-time-series) in all the tenants. A time series is considered active if it received at least a single sample during the last hour or it has been touched by queries during the last hour.
 
 - The list of registered tenants can be obtained via `http://<vmselect>:8481/admin/tenants` url. See [these docs](#url-format).
 
@@ -1185,8 +1185,11 @@ Below is the output for `/path/to/vminsert -help`:
      Supports an array of values separated by comma or specified via multiple flags.
      Value can contain comma inside single-quoted or double-quoted string, {}, [] and () braces.
   -influx.maxLineSize size
-     The maximum size in bytes for a single InfluxDB line during parsing
+     The maximum size in bytes for a single InfluxDB line during parsing. Applicable for stream mode only. See https://docs.victoriametrics.com/#how-to-send-data-from-influxdb-compatible-agents-such-as-telegraf
      Supports the following optional suffixes for size values: KB, MB, GB, TB, KiB, MiB, GiB, TiB (default 262144)
+  -influx.maxRequestSize size
+     The maximum size in bytes of a single InfluxDB request. Applicable for batch mode only. See https://docs.victoriametrics.com/#how-to-send-data-from-influxdb-compatible-agents-such-as-telegraf
+     Supports the following optional suffixes for size values: KB, MB, GB, TB, KiB, MiB, GiB, TiB (default 67108864)
   -influxDBLabel string
      Default label for the DB name sent over '?db={db_name}' query parameter (default "db")
   -influxListenAddr string
